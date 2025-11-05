@@ -8,7 +8,12 @@
     "start": "node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["recipes", "node", "express", "sqlite"],
+  "keywords": [
+    "recipes",
+    "node",
+    "express",
+    "sqlite"
+  ],
   "author": "Ken Mori",
   "license": "MIT",
   "dependencies": {
