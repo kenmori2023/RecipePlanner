@@ -16,4 +16,3 @@ A full-stack web app where users can **search, add, and share recipes** — comp
 - **Database:** SQLite (local dev); easy to swap to MySQL/Postgres
 - **Auth:** (Planned) session / cookie-based
 
-## 🗂 Project Structure
