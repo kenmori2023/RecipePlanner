@@ -3,11 +3,32 @@
   <body>
     <h2>Recipes</h2>
     <p><a href="/recipes/new">➕ Add New Recipe</a></p>
-    <ul>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+      <tr>
+        <th>Title</th>
+        <th>Cuisine</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
       <% recipes.forEach(r => { %>
-        <li><strong><%= r.title %></strong> (<%= r.cuisine || 'No Cuisine' %>)</li>
+        <tr>
+          <td><%= r.title %></td>
+          <td><%= r.cuisine || 'No Cuisine' %></td>
+          <td><%= new Date(r.created_at).toLocaleString() %></td>
+          <td>
+            <a href="/recipes/<%= r.id %>/edit">✏️ Edit</a>
+            <form method="post" action="/recipes/<%= r.id %>/delete" style="display:inline">
+              <button onclick="return confirm('Are you sure you want to delete this recipe?')">🗑 Delete</button>
+            </form>
+          </td>
+        </tr>
       <% }); %>
-    </ul>
-    <p><a href="/">Home</a></p>
+      <% if (!recipes.length) { %>
+        <tr><td colspan="4">No recipes found.</td></tr>
+      <% } %>
+    </table>
+
+    <p style="margin-top:10px"><a href="/">Home</a></p>
   </body>
 </html>
