@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+  <body>
+    <h2>Search Results</h2>
+
+    <form method="get" action="/search/results">
+      <input type="text" name="q" placeholder="Search text..." value="<%= q %>">
+      <select name="cuisine">
+        <option value="">Any cuisine</option>
+        <% cuisines.forEach(function(c) { %>
+          <option value="<%= c.name %>" <%= c.name === cuisine ? 'selected' : '' %>><%= c.name %></option>
+        <% }); %>
+      </select>
+      <select name="ingredient_id">
+        <option value="">Any ingredient</option>
+        <% ingredients.forEach(function(i) { %>
+          <option value="<%= i.id %>" <%= String(i.id) === String(ingredientId) ? 'selected' : '' %>><%= i.name %></option>
+        <% }); %>
+      </select>
+      <button>Search</button>
+    </form>
+
+    <table border="1" cellpadding="6" style="margin-top:10px">
+      <tr>
+        <th>Title</th><th>Cuisine</th><th>Created</th><th># Ingredients</th><th>Total Cost</th><th></th>
+      </tr>
+      <% if (rows.length) { %>
+        <% rows.forEach(function(r) { %>
+          <tr>
+            <td><%= r.title %></td>
+            <td><%= r.cuisine || '-' %></td>
+            <td><%= new Date(r.created_at).toLocaleString() %></td>
+            <td><%= r.ingredient_count %></td>
+            <td>$<%= (r.total_cost || 0).toFixed(2) %></td>
+            <td><a href="/recipes/<%= r.id %>/edit">Edit</a></td>
+          </tr>
+        <% }); %>
+      <% } else { %>
+        <tr><td colspan="6">No matches.</td></tr>
+      <% } %>
+    </table>
+
+    <p style="margin-top:10px"><a href="/">Home</a> · <a href="/recipes">Recipes</a> · <a href="/reports">Reports</a></p>
+  </body>
+</html>

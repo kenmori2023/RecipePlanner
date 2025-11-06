@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <body>
+    <h2>Search Recipes</h2>
+    <form method="get" action="/search/results">
+      <input type="text" name="q" placeholder="Search text..." value="<%= q %>">
+      <select name="cuisine">
+        <option value="">Any cuisine</option>
+        <% cuisines.forEach(function(c) { %>
+            <option value="<%= c.name %>"><%= c.name %></option>
+        <% }); %>
+      </select>
+      <select name="ingredient_id">
+        <option value="">Any ingredient</option>
+        <% ingredients.forEach(function(i) { %>
+            <option value="<%= i.id %>"><%= i.name %></option>
+        <% }); %>
+        </select>
+      <button>Search</button>
+    </form>
+    <p><a href="/">Home</a> · <a href="/recipes">Recipes</a> · <a href="/reports">Reports</a></p>
+  </body>
+</html>

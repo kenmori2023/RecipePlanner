@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+  <body>
+    <h2>Recipes</h2>
+    <p><a href="/recipes/new">➕ Add New Recipe</a></p>
+    <ul>
+      <% recipes.forEach(r => { %>
+        <li><strong><%= r.title %></strong> (<%= r.cuisine || 'No Cuisine' %>)</li>
+      <% }); %>
+    </ul>
+    <p><a href="/">Home</a></p>
+  </body>
+</html>

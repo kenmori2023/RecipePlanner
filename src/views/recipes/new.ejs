@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <body>
+    <h2>Add a New Recipe</h2>
+    <form method="post" action="/recipes">
+      <p><input name="title" placeholder="Name" required></p>
+      <p><input name="cuisine" placeholder="Cuisine"></p>
+      <p><textarea name="description" placeholder="Description"></textarea></p>
+      <p><input name="prep_minutes" type="number" placeholder="Prep Time (min)"></p>
+      <p><input name="cook_minutes" type="number" placeholder="Cook Time (min)"></p>
+
+      <h3>Ingredients</h3>
+      <% ingredients.forEach(i => { %>
+        <label>
+          <input type="checkbox" name="ingredient_ids[]" value="<%= i.id %>">
+          <%= i.name %>
+        </label><br>
+      <% }); %>
+
+      <p><button>Add Recipe</button></p>
+    </form>
+    <p><a href="/recipes">← Back to Recipes</a></p>
+  </body>
+</html>

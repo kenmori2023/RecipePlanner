@@ -2,6 +2,8 @@
 <html>
   <body>
     <h2>Edit Recipe</h2>
+
+    <!-- Recipe fields -->
     <form method="post" action="/recipes/<%= recipe.id %>">
       <label>Title <input name="title" value="<%= recipe.title %>" required></label><br>
       <label>Cuisine <input name="cuisine" value="<%= recipe.cuisine || '' %>"></label><br>
@@ -11,9 +13,47 @@
       <label>Description<br><textarea name="description" rows="4"><%= recipe.description || '' %></textarea></label><br>
       <button type="submit">Update</button>
     </form>
+
     <form method="post" action="/recipes/<%= recipe.id %>/delete" style="margin-top:8px">
-      <button type="submit">Delete</button>
+      <button type="submit">Delete Recipe</button>
     </form>
-    <p><a href="/recipes">Back</a></p>
+
+    <hr>
+
+    <!-- Ingredients & Total Cost -->
+    <h3>Ingredients</h3>
+    <p><strong>Total Cost:</strong> $<%= (totalCost || 0).toFixed(2) %></p>
+
+    <table border="1" cellpadding="6">
+      <tr>
+        <th>Name</th><th>Qty</th><th>Unit</th><th>Price</th><th>Prep</th><th></th>
+      </tr>
+      <% for (const ing of ingredients) { %>
+        <tr>
+          <td><%= ing.name %></td>
+          <td><%= ing.quantity ?? '' %></td>
+          <td><%= ing.unit || '' %></td>
+          <td><%= (ing.price ?? 0).toFixed ? ing.price.toFixed(2) : ing.price %></td>
+          <td><%= ing.preparation || '' %></td>
+          <td>
+            <form method="post" action="/recipes/<%= recipe.id %>/ingredients/delete/<%= ing.id %>" style="display:inline">
+              <button type="submit">Remove</button>
+            </form>
+          </td>
+        </tr>
+      <% } %>
+    </table>
+
+    <h4 style="margin-top:12px">Add Ingredient</h4>
+    <form method="post" action="/recipes/<%= recipe.id %>/ingredients/add">
+      <label>Name <input name="name" placeholder="e.g., Garlic" required></label>
+      <label>Qty <input name="quantity" type="number" step="0.01" min="0"></label>
+      <label>Unit <input name="unit" placeholder="g, tbsp, cup"></label>
+      <label>Price $ <input name="price" type="number" step="0.01" min="0"></label>
+      <label>Prep <input name="preparation" placeholder="minced, chopped"></label>
+      <button type="submit">Add</button>
+    </form>
+
+    <p style="margin-top:12px"><a href="/recipes">Back to list</a></p>
   </body>
 </html>

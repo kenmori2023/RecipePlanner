@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <body>
+    <h2>Report Results</h2>
+
+    <form method="post" action="/reports/results" style="margin-bottom:10px">
+      <label>From <input type="date" name="from" value="<%= filters.from %>"></label>
+      <label>To <input type="date" name="to" value="<%= filters.to %>"></label>
+
+      <select name="cuisine">
+        <option value="">Any cuisine</option>
+        <% for (const c of cuisines) { %>
+          <option value="<%= c.name %>" <%= c.name === filters.cuisine ? 'selected' : '' %>><%= c.name %></option>
+        <% } %>
+      </select>
+
+      <select name="ingredient_id">
+        <option value="">Any ingredient</option>
+        <% for (const i of ingredients) { %>
+          <option value="<%= i.id %>" <%= String(i.id) === String(filters.ingredient_id) ? 'selected' : '' %>><%= i.name %></option>
+        <% } %>
+      </select>
+
+      <button>Generate</button>
+    </form>
+
+    <h3>Stats</h3>
+    <ul>
+      <li>Avg Prep Time: <%= stats.avg_prep ? stats.avg_prep.toFixed(1) : '0.0' %> min</li>
+      <li>Avg Cook Time: <%= stats.avg_cook ? stats.avg_cook.toFixed(1) : '0.0' %> min</li>
+      <li>Avg Ingredient Count: <%= stats.avg_ingredients ? stats.avg_ingredients.toFixed(1) : '0.0' %></li>
+      <li>Avg Total Cost: $<%= stats.avg_total_cost ? stats.avg_total_cost.toFixed(2) : '0.00' %></li>
+    </ul>
+
+    <h3>Matching Recipes</h3>
+    <table border="1" cellpadding="6">
+      <tr>
+        <th>Title</th><th>Cuisine</th><th>Created</th><th>Prep</th><th>Cook</th><th># Ingredients</th><th>Total Cost</th><th></th>
+      </tr>
+      <% for (const r of list) { %>
+        <tr>
+          <td><%= r.title %></td>
+          <td><%= r.cuisine || '-' %></td>
+          <td><%= new Date(r.created_at).toLocaleString() %></td>
+          <td><%= r.prep_minutes || 0 %>m</td>
+          <td><%= r.cook_minutes || 0 %>m</td>
+          <td><%= r.ingredient_count %></td>
+          <td>$<%= (r.total_cost || 0).toFixed(2) %></td>
+          <td><a href="/recipes/<%= r.id %>/edit">Edit</a></td>
+        </tr>
+      <% } %>
+      <% if (!list.length) { %>
+        <tr><td colspan="8">No matching recipes found.</td></tr>
+      <% } %>
+    </table>
+
+    <p style="margin-top:10px"><a href="/">Home</a> · <a href="/recipes">Recipes</a> · <a href="/search">Search</a> · <a href="/reports">Reports</a></p>
+  </body>
+</html>

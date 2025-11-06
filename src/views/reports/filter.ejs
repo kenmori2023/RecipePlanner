@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <body>
+    <h2>Reports</h2>
+    <form method="post" action="/reports/results">
+      <label>From <input type="date" name="from"></label>
+      <label>To <input type="date" name="to"></label>
+
+      <select name="cuisine">
+        <option value="">Any cuisine</option>
+        <% cuisines.forEach(function(c) { %>
+          <option value="<%= c.name %>"><%= c.name %></option>
+        <% }); %>
+      </select>
+
+      <select name="ingredient_id">
+        <option value="">Any ingredient</option>
+        <% ingredients.forEach(function(i) { %>
+          <option value="<%= i.id %>"><%= i.name %></option>
+        <% }); %>
+      </select>
+
+      <button>Generate</button>
+    </form>
+
+    <p><a href="/">Home</a> · <a href="/recipes">Recipes</a> · <a href="/search">Search</a></p>
+  </body>
+</html>
