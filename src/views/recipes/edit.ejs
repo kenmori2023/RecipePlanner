@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+  <body>
+    <h2>Edit Recipe</h2>
+    <form method="post" action="/recipes/<%= recipe.id %>">
+      <label>Title <input name="title" value="<%= recipe.title %>" required></label><br>
+      <label>Cuisine <input name="cuisine" value="<%= recipe.cuisine || '' %>"></label><br>
+      <label>Servings <input name="servings" type="number" min="1" value="<%= recipe.servings || '' %>"></label><br>
+      <label>Prep (min) <input name="prep_minutes" type="number" min="0" value="<%= recipe.prep_minutes || 0 %>"></label><br>
+      <label>Cook (min) <input name="cook_minutes" type="number" min="0" value="<%= recipe.cook_minutes || 0 %>"></label><br>
+      <label>Description<br><textarea name="description" rows="4"><%= recipe.description || '' %></textarea></label><br>
+      <button type="submit">Update</button>
+    </form>
+    <form method="post" action="/recipes/<%= recipe.id %>/delete" style="margin-top:8px">
+      <button type="submit">Delete</button>
+    </form>
+    <p><a href="/recipes">Back</a></p>
+  </body>
+</html>

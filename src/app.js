@@ -7,6 +7,8 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+// ✅ Needed to read HTML form data
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (_req, res) => {
@@ -15,6 +17,9 @@ app.get('/', (_req, res) => {
     <p><a href="/recipes">View Recipes</a></p>
   `);
 });
+
+const recipeRoutes = require('./routes/recipes.routes');
+app.use('/recipes', recipeRoutes);
 
 const db = require('./db');
 app.get('/debug/recipes', (_req, res) => {

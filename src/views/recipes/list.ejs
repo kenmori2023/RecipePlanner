@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <body>
+    <h2>Recipes</h2>
+    <p><a href="/recipes/new">+ New Recipe</a></p>
+    <table border="1" cellpadding="6">
+      <tr><th>Title</th><th>Cuisine</th><th>Prep</th><th>Cook</th><th>Actions</th></tr>
+      <% for (const r of rows) { %>
+        <tr>
+          <td><%= r.title %></td>
+          <td><%= r.cuisine || '-' %></td>
+          <td><%= r.prep_minutes %> min</td>
+          <td><%= r.cook_minutes %> min</td>
+          <td>
+            <a href="/recipes/<%= r.id %>/edit">Edit</a>
+            <form action="/recipes/<%= r.id %>/delete" method="post" style="display:inline">
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+      <% } %>
+    </table>
+    <p><a href="/">Home</a></p>
+  </body>
+</html>
