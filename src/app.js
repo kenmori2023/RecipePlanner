@@ -16,8 +16,9 @@ app.get('/', (_req, res) => {
     <h1>RecipePlanner 🔍</h1>
     <p>
       <a href="/recipes">Recipes</a> ·
+      <a href="/ingredients">Ingredients</a> ·
       <a href="/search">Search</a> ·
-      <a href="/reports">Reports</a>
+      <a href="/reports">Reports</a> 
     </p>
   `);
 });
@@ -25,10 +26,12 @@ app.get('/', (_req, res) => {
 const recipeRoutes  = require('./routes/recipes.routes');
 const searchRoutes  = require('./routes/search.routes');
 const reportRoutes  = require('./routes/reports.routes');
+const ingredientRoutes = require('./routes/ingredients.routes');
 
 app.use('/recipes', recipeRoutes);
 app.use('/search',  searchRoutes);
 app.use('/reports', reportRoutes);
+app.use('/ingredients', ingredientRoutes);
 
 const db = require('./db');
 app.get('/debug/recipes', (_req, res) => {

@@ -1,0 +1,11 @@
+<!doctype html>
+<html>
+  <body>
+    <h2>Edit Ingredient</h2>
+    <form method="post" action="/ingredients/<%= ingredient.id %>">
+      <input name="name" value="<%= ingredient.name %>" required>
+      <button>Update</button>
+    </form>
+    <p><a href="/ingredients">← Back to Ingredients</a></p>
+  </body>
+</html>
