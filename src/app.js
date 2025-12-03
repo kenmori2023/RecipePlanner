@@ -22,6 +22,12 @@ app.use(session({
 // expose current user id to templates
 app.use((req, res, next) => {
   res.locals.currentUserId = req.session.userId || null;
+  if (req.session.userId) {
+    const user = db.prepare('SELECT username FROM users WHERE id = ?').get(req.session.userId);
+    res.locals.currentUsername = user?.username || null;
+  } else {
+    res.locals.currentUsername = null;
+  }
   next();
 });
 
@@ -31,17 +37,37 @@ app.use((req, _res, next) => {
   next();
 });
 
+// require login for all routes except auth routes
+app.use((req, res, next) => {
+  // Allow access to auth routes without login
+  if (req.path.startsWith('/auth')) {
+    return next();
+  }
+  // If not logged in, redirect to login page
+  if (!req.session.userId) {
+    return res.redirect('/auth/login');
+  }
+  next();
+});
+
 // --------- Home page ---------
 app.get('/', (_req, res) => {
+  const { currentUsername } = res.locals;
+
   res.send(`
-    <h1>RecipePlanner 🔍</h1>
+    <h1>RecipePlanner 🍳</h1>
+    <p style="text-align:right">
+      Hello, <strong>${currentUsername}</strong> ·
+      <a href="/auth/account">Account</a> ·
+      <form method="post" action="/auth/logout" style="display:inline">
+        <button type="submit" style="background:none;border:none;color:blue;text-decoration:underline;cursor:pointer;padding:0;font-size:inherit;">Logout</button>
+      </form>
+    </p>
     <p>
       <a href="/recipes">Recipes</a> ·
       <a href="/ingredients">Ingredients</a> ·
       <a href="/search">Search</a> ·
-      <a href="/reports">Reports</a> ·
-      <a href="/auth/register">Register</a> ·
-      <a href="/auth/login">Login</a>
+      <a href="/reports">Reports</a>
     </p>
   `);
 });
@@ -130,7 +156,7 @@ app.post('/auth/logout', (req, res) => {
 app.get('/auth/account', requireLogin, (req, res) => {
   const user = db.prepare('SELECT id, username, created_at FROM users WHERE id = ?')
                  .get(req.session.userId);
-  res.render('auth/account', { user, error: null });
+  res.render('auth/account', { user, error: null, success: null });
 });
 
 app.post('/auth/account/username', requireLogin, (req, res) => {
@@ -139,7 +165,7 @@ app.post('/auth/account/username', requireLogin, (req, res) => {
   if (!newUsername) {
     const user = db.prepare('SELECT id, username, created_at FROM users WHERE id = ?')
                    .get(req.session.userId);
-    return res.render('auth/account', { user, error: 'Username cannot be empty.' });
+    return res.render('auth/account', { user, error: 'Username cannot be empty.', success: null });
   }
 
   try {
@@ -149,12 +175,59 @@ app.post('/auth/account/username', requireLogin, (req, res) => {
     if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
       const user = db.prepare('SELECT id, username, created_at FROM users WHERE id = ?')
                      .get(req.session.userId);
-      return res.render('auth/account', { user, error: 'That username is already taken.' });
+      return res.render('auth/account', { user, error: 'That username is already taken.', success: null });
     }
     throw err;
   }
 
   res.redirect('/auth/account');
+});
+
+app.post('/auth/account/password', requireLogin, (req, res) => {
+  const currentPassword = req.body.current_password || '';
+  const newPassword = req.body.new_password || '';
+  const confirmPassword = req.body.confirm_password || '';
+
+  const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.session.userId);
+
+  // Verify current password
+  const isCurrentCorrect = bcrypt.compareSync(currentPassword, user.password_hash);
+  if (!isCurrentCorrect) {
+    return res.render('auth/account', { 
+      user, 
+      error: 'Current password is incorrect.', 
+      success: null 
+    });
+  }
+
+  // Check new passwords match
+  if (newPassword !== confirmPassword) {
+    return res.render('auth/account', { 
+      user, 
+      error: 'New passwords do not match.', 
+      success: null 
+    });
+  }
+
+  // Check new password is not empty
+  if (!newPassword) {
+    return res.render('auth/account', { 
+      user, 
+      error: 'New password cannot be empty.', 
+      success: null 
+    });
+  }
+
+  // Hash and save new password
+  const newHash = bcrypt.hashSync(newPassword, 10);
+  db.prepare('UPDATE users SET password_hash = ? WHERE id = ?')
+    .run(newHash, req.session.userId);
+
+  res.render('auth/account', { 
+    user, 
+    error: null, 
+    success: 'Password changed successfully!' 
+  });
 });
 
 // transaction for deleting account + recipes

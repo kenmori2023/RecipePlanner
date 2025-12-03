@@ -8,12 +8,45 @@
     <% if (error) { %>
       <p style="color:red"><%= error %></p>
     <% } %>
+    <% if (typeof success !== 'undefined' && success) { %>
+      <p style="color:green"><%= success %></p>
+    <% } %>
 
     <h3>Change Username</h3>
     <form method="post" action="/auth/account/username">
       <input name="username" value="<%= user.username %>" required>
       <button>Update Username</button>
     </form>
+
+    <h3>Change Password</h3>
+    <form method="post" action="/auth/account/password">
+      <p style="display:flex; align-items:center; gap:8px;">
+        <input id="current_password" name="current_password" type="password" placeholder="Current password" required>
+        <button type="button" onclick="togglePassword('current_password', this)" title="Show/Hide password">👁</button>
+      </p>
+      <p style="display:flex; align-items:center; gap:8px;">
+        <input id="new_password" name="new_password" type="password" placeholder="New password" required>
+        <button type="button" onclick="togglePassword('new_password', this)" title="Show/Hide password">👁</button>
+      </p>
+      <p style="display:flex; align-items:center; gap:8px;">
+        <input id="confirm_password" name="confirm_password" type="password" placeholder="Confirm new password" required>
+        <button type="button" onclick="togglePassword('confirm_password', this)" title="Show/Hide password">👁</button>
+      </p>
+      <button>Update Password</button>
+    </form>
+
+    <script>
+      function togglePassword(inputId, btn) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+          input.type = 'text';
+          btn.textContent = '🙈';
+        } else {
+          input.type = 'password';
+          btn.textContent = '👁';
+        }
+      }
+    </script>
 
     <h3>Delete Account</h3>
     <form method="post" action="/auth/account/delete">

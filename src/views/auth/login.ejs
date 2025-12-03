@@ -1,16 +1,202 @@
 <!doctype html>
 <html>
-  <body>
-    <h2>Login</h2>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | RecipePlanner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      padding: 20px;
+    }
+
+    .login-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      animation: slideUp 0.5s ease-out;
+      color: #333;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo p {
+      color: #888;
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+
+    .error-message {
+      background: #ffe6e6;
+      color: #d63031;
+      padding: 12px 15px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+      border-left: 4px solid #d63031;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid #eee;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+      background: #fafafa;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #764ba2;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(118, 75, 162, 0.1);
+    }
+
+    .input-group input::placeholder {
+      color: #aaa;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(118, 75, 162, 0.4);
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 25px 0;
+      color: #ccc;
+      font-size: 0.85rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #eee;
+    }
+
+    .divider span {
+      padding: 0 15px;
+    }
+
+    .register-link {
+      text-align: center;
+    }
+
+    .register-link a {
+      color: #764ba2;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .register-link a:hover {
+      color: #667eea;
+      text-decoration: underline;
+    }
+
+    .footer-text {
+      text-align: center;
+      margin-top: 30px;
+      color: #aaa;
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">
+      <h1>🍳 RecipePlanner</h1>
+      <p>Welcome back! Please login to continue.</p>
+    </div>
+
     <% if (error) { %>
-      <p style="color:red"><%= error %></p>
+      <div class="error-message"><%= error %></div>
     <% } %>
+
     <form method="post" action="/auth/login">
-      <p><input name="username" placeholder="Username" required></p>
-      <p><input name="password" type="password" placeholder="Password" required></p>
-      <button>Login</button>
+      <div class="input-group">
+        <input name="username" placeholder="Username" required autocomplete="username">
+      </div>
+      <div class="input-group">
+        <input name="password" type="password" placeholder="Password" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="login-btn">Log In</button>
     </form>
-    <p><a href="/auth/register">Need an account? Register</a></p>
-    <p><a href="/">Home</a></p>
-  </body>
+
+    <div class="divider"><span>OR</span></div>
+
+    <div class="register-link">
+      <p>Don't have an account? <a href="/auth/register">Sign up</a></p>
+    </div>
+
+    <p class="footer-text">Share your recipes with the world 🌍</p>
+  </div>
+</body>
 </html>
