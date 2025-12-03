@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+  <body>
+    <h2>Register</h2>
+    <% if (error) { %>
+      <p style="color:red"><%= error %></p>
+    <% } %>
+    <form method="post" action="/auth/register">
+      <p><input name="username" placeholder="Username" required></p>
+      <p><input name="password" type="password" placeholder="Password" required></p>
+      <button>Create Account</button>
+    </form>
+    <p><a href="/auth/login">Already have an account? Login</a></p>
+    <p><a href="/">Home</a></p>
+  </body>
+</html>

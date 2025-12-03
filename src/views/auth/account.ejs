@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+  <body>
+    <h2>Account</h2>
+    <p>Logged in as <strong><%= user.username %></strong></p>
+    <p>Created at: <%= user.created_at %></p>
+
+    <% if (error) { %>
+      <p style="color:red"><%= error %></p>
+    <% } %>
+
+    <h3>Change Username</h3>
+    <form method="post" action="/auth/account/username">
+      <input name="username" value="<%= user.username %>" required>
+      <button>Update Username</button>
+    </form>
+
+    <h3>Delete Account</h3>
+    <form method="post" action="/auth/account/delete">
+      <button onclick="return confirm('This will delete your account and your recipes. Continue?')">
+        Delete My Account
+      </button>
+    </form>
+
+    <form method="post" action="/auth/logout" style="margin-top:10px">
+      <button>Log out</button>
+    </form>
+
+    <p style="margin-top:10px"><a href="/">Home</a></p>
+  </body>
+</html>
