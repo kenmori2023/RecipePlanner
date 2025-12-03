@@ -77,7 +77,7 @@ router.post('/logout', (req, res) => {
 router.get('/account', requireLogin, (req, res) => {
   const user = db.prepare('SELECT id, username, created_at FROM users WHERE id = ?')
                  .get(req.session.userId);
-  res.render('auth/account', { user, error: null });
+  res.render('auth/account', { user, error: null, success: null });
 });
 
 router.post('/account/username', requireLogin, (req, res) => {
@@ -86,7 +86,7 @@ router.post('/account/username', requireLogin, (req, res) => {
   if (!newUsername) {
     const user = db.prepare('SELECT id, username, created_at FROM users WHERE id = ?')
                    .get(req.session.userId);
-    return res.render('auth/account', { user, error: 'Username cannot be empty.' });
+    return res.render('auth/account', { user, error: 'Username cannot be empty.', success: null });
   }
 
   try {
@@ -96,7 +96,7 @@ router.post('/account/username', requireLogin, (req, res) => {
     if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
       const user = db.prepare('SELECT id, username, created_at FROM users WHERE id = ?')
                      .get(req.session.userId);
-      return res.render('auth/account', { user, error: 'That username is already taken.' });
+      return res.render('auth/account', { user, error: 'That username is already taken.', success: null });
     }
     throw err;
   }

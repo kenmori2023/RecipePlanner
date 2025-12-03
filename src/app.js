@@ -55,20 +55,164 @@ app.get('/', (_req, res) => {
   const { currentUsername } = res.locals;
 
   res.send(`
-    <h1>RecipePlanner 🍳</h1>
-    <p style="text-align:right">
-      Hello, <strong>${currentUsername}</strong> ·
-      <a href="/auth/account">Account</a> ·
-      <form method="post" action="/auth/logout" style="display:inline">
-        <button type="submit" style="background:none;border:none;color:blue;text-decoration:underline;cursor:pointer;padding:0;font-size:inherit;">Logout</button>
-      </form>
-    </p>
-    <p>
-      <a href="/recipes">Recipes</a> ·
-      <a href="/ingredients">Ingredients</a> ·
-      <a href="/search">Search</a> ·
-      <a href="/reports">Reports</a>
-    </p>
+    <!doctype html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>RecipePlanner</title>
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+          font-family: 'Poppins', sans-serif;
+          min-height: 100vh;
+          background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+          color: #fff;
+        }
+        .navbar {
+          background: rgba(255,255,255,0.1);
+          backdrop-filter: blur(10px);
+          padding: 15px 30px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .navbar .logo {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #fff;
+          text-decoration: none;
+        }
+        .navbar .user-info {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+        }
+        .navbar .user-info span { color: #ccc; }
+        .navbar .user-info strong { color: #fff; }
+        .navbar a {
+          color: #4facfe;
+          text-decoration: none;
+          font-weight: 500;
+          transition: color 0.3s;
+        }
+        .navbar a:hover { color: #00f2fe; }
+        .navbar button {
+          background: none;
+          border: none;
+          color: #ff6b6b;
+          cursor: pointer;
+          font-family: 'Poppins', sans-serif;
+          font-size: 0.9rem;
+          font-weight: 500;
+        }
+        .navbar button:hover { color: #ee5a5a; }
+        .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 40px 20px;
+        }
+        .hero {
+          text-align: center;
+          padding: 60px 20px;
+          animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .hero h1 {
+          font-size: 3rem;
+          margin-bottom: 10px;
+          background: linear-gradient(135deg, #4facfe, #00f2fe);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        .hero p {
+          color: #aaa;
+          font-size: 1.1rem;
+          margin-bottom: 40px;
+        }
+        .features {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 25px;
+          margin-top: 20px;
+        }
+        .feature-card {
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 20px;
+          padding: 30px;
+          text-align: center;
+          transition: all 0.3s ease;
+          text-decoration: none;
+          color: inherit;
+        }
+        .feature-card:hover {
+          background: rgba(255,255,255,0.1);
+          transform: translateY(-5px);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .feature-card .icon {
+          font-size: 3rem;
+          margin-bottom: 15px;
+        }
+        .feature-card h3 {
+          font-size: 1.3rem;
+          margin-bottom: 10px;
+          color: #fff;
+        }
+        .feature-card p {
+          color: #888;
+          font-size: 0.9rem;
+        }
+      </style>
+    </head>
+    <body>
+      <nav class="navbar">
+        <a href="/" class="logo">🍳 RecipePlanner</a>
+        <div class="user-info">
+          <span>Hello, <strong>${currentUsername}</strong></span>
+          <a href="/auth/account">Account</a>
+          <form method="post" action="/auth/logout" style="display:inline">
+            <button type="submit">Logout</button>
+          </form>
+        </div>
+      </nav>
+      <div class="container">
+        <div class="hero">
+          <h1>Welcome to RecipePlanner</h1>
+          <p>Organize your recipes, track ingredients, and cook with confidence</p>
+        </div>
+        <div class="features">
+          <a href="/recipes" class="feature-card">
+            <div class="icon">📖</div>
+            <h3>Recipes</h3>
+            <p>Create, edit, and manage all your favorite recipes</p>
+          </a>
+          <a href="/ingredients" class="feature-card">
+            <div class="icon">🥕</div>
+            <h3>Ingredients</h3>
+            <p>Keep track of your ingredient inventory</p>
+          </a>
+          <a href="/search" class="feature-card">
+            <div class="icon">🔍</div>
+            <h3>Search</h3>
+            <p>Find recipes by name, cuisine, or ingredient</p>
+          </a>
+          <a href="/reports" class="feature-card">
+            <div class="icon">📊</div>
+            <h3>Reports</h3>
+            <p>Analyze your recipes with detailed statistics</p>
+          </a>
+        </div>
+      </div>
+    </body>
+    </html>
   `);
 });
 

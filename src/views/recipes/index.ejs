@@ -1,34 +1,144 @@
 <!doctype html>
 <html>
-  <body>
-    <h2>Recipes</h2>
-    <p><a href="/recipes/new">➕ Add New Recipe</a></p>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipes | RecipePlanner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #fff;
+    }
+    .navbar {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .navbar .logo { font-size: 1.5rem; font-weight: 700; color: #fff; text-decoration: none; }
+    .navbar a { color: #4facfe; text-decoration: none; font-weight: 500; }
+    .navbar a:hover { color: #00f2fe; }
+    .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    .header h1 {
+      font-size: 2rem;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      color: #1a1a2e;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+    }
+    .btn-sm { padding: 8px 15px; font-size: 0.85rem; }
+    .btn-danger { background: #ff6b6b; color: #fff; }
+    .btn-danger:hover { background: #ee5a5a; }
+    .recipe-grid {
+      display: grid;
+      gap: 20px;
+    }
+    .recipe-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s;
+    }
+    .recipe-card:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateX(5px);
+    }
+    .recipe-info h3 { font-size: 1.2rem; color: #fff; margin-bottom: 5px; }
+    .recipe-info p { color: #888; font-size: 0.9rem; }
+    .recipe-info .cuisine {
+      display: inline-block;
+      background: rgba(79, 172, 254, 0.2);
+      color: #4facfe;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-top: 8px;
+    }
+    .recipe-actions { display: flex; gap: 10px; }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+    .empty-state .icon { font-size: 4rem; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="logo">🍳 RecipePlanner</a>
+    <a href="/">← Back to Home</a>
+  </nav>
 
-    <table border="1" cellpadding="8" cellspacing="0">
-      <tr>
-        <th>Title</th>
-        <th>Cuisine</th>
-        <th>Created At</th>
-        <th>Actions</th>
-      </tr>
-      <% recipes.forEach(r => { %>
-        <tr>
-          <td><%= r.title %></td>
-          <td><%= r.cuisine || 'No Cuisine' %></td>
-          <td><%= new Date(r.created_at).toLocaleString() %></td>
-          <td>
-            <a href="/recipes/<%= r.id %>/edit">✏️ Edit</a>
-            <form method="post" action="/recipes/<%= r.id %>/delete" style="display:inline">
-              <button onclick="return confirm('Are you sure you want to delete this recipe?')">🗑 Delete</button>
-            </form>
-          </td>
-        </tr>
-      <% }); %>
-      <% if (!recipes.length) { %>
-        <tr><td colspan="4">No recipes found.</td></tr>
+  <div class="container">
+    <div class="header">
+      <h1>📖 My Recipes</h1>
+      <a href="/recipes/new" class="btn btn-primary">➕ Add New Recipe</a>
+    </div>
+
+    <div class="recipe-grid">
+      <% if (recipes.length) { %>
+        <% recipes.forEach(r => { %>
+          <div class="recipe-card">
+            <div class="recipe-info">
+              <h3><%= r.title %></h3>
+              <p>Created: <%= new Date(r.created_at).toLocaleDateString() %></p>
+              <% if (r.cuisine) { %>
+                <span class="cuisine"><%= r.cuisine %></span>
+              <% } %>
+            </div>
+            <div class="recipe-actions">
+              <a href="/recipes/<%= r.id %>/edit" class="btn btn-primary btn-sm">✏️ Edit</a>
+              <form method="post" action="/recipes/<%= r.id %>/delete" style="display:inline">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this recipe?')">🗑️</button>
+              </form>
+            </div>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div class="empty-state">
+          <div class="icon">📝</div>
+          <h3>No recipes yet</h3>
+          <p>Create your first recipe to get started!</p>
+        </div>
       <% } %>
-    </table>
-
-    <p style="margin-top:10px"><a href="/">Home</a></p>
-  </body>
+    </div>
+  </div>
+</body>
 </html>

@@ -1,16 +1,12 @@
 const db = require('../db');
 
 module.exports.filterForm = (_req, res) => {
-  console.log('[CTRL] reports.filterForm');
   const cuisines = db.prepare(`SELECT DISTINCT cuisine AS name FROM recipes WHERE cuisine IS NOT NULL ORDER BY 1`).all();
   const ingredients = db.prepare(`SELECT id, name FROM ingredients ORDER BY name`).all();
   res.render('reports/filter', { cuisines: cuisines || [], ingredients: ingredients || [] });
-  console.log('[DATA] cuisines:', cuisines);
-  console.log('[DATA] ingredients:', ingredients);
 };
 
 module.exports.results = (req, res) => {
-  console.log('[CTRL] reports.results', req.body);
   const { from, to, cuisine, ingredient_id } = req.body;
 
   const where = [];

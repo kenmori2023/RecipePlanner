@@ -1,64 +1,224 @@
 <!doctype html>
 <html>
-  <body>
-    <h2>Account</h2>
-    <p>Logged in as <strong><%= user.username %></strong></p>
-    <p>Created at: <%= user.created_at %></p>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account | RecipePlanner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #fff;
+    }
+    .navbar {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .navbar .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+    }
+    .navbar a { color: #4facfe; text-decoration: none; font-weight: 500; }
+    .navbar a:hover { color: #00f2fe; }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 20px;
+    }
+    .card h2 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .card h3 {
+      font-size: 1.1rem;
+      margin: 25px 0 15px 0;
+      color: #ccc;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 10px;
+    }
+    .user-info { color: #aaa; margin-bottom: 5px; }
+    .user-info strong { color: #fff; }
+    .error-message {
+      background: rgba(255, 107, 107, 0.2);
+      color: #ff6b6b;
+      padding: 12px 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      border-left: 4px solid #ff6b6b;
+    }
+    .success-message {
+      background: rgba(0, 242, 254, 0.2);
+      color: #00f2fe;
+      padding: 12px 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      border-left: 4px solid #00f2fe;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+      transition: all 0.3s;
+    }
+    input:focus {
+      outline: none;
+      border-color: #4facfe;
+      background: rgba(255,255,255,0.1);
+    }
+    input::placeholder { color: #666; }
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .input-row input { margin-bottom: 0; flex: 1; }
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      color: #1a1a2e;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+    }
+    .btn-danger {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+      color: #fff;
+    }
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    .btn-icon {
+      padding: 12px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border-radius: 10px;
+      min-width: 45px;
+    }
+    .btn-icon:hover { background: rgba(255,255,255,0.2); }
+    .logout-section {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      gap: 15px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="logo">🍳 RecipePlanner</a>
+    <a href="/">← Back to Home</a>
+  </nav>
 
-    <% if (error) { %>
-      <p style="color:red"><%= error %></p>
-    <% } %>
-    <% if (typeof success !== 'undefined' && success) { %>
-      <p style="color:green"><%= success %></p>
-    <% } %>
+  <div class="container">
+    <div class="card">
+      <h2>Account Settings</h2>
+      <p class="user-info">Logged in as <strong><%= user.username %></strong></p>
+      <p class="user-info">Member since: <%= user.created_at %></p>
 
-    <h3>Change Username</h3>
-    <form method="post" action="/auth/account/username">
-      <input name="username" value="<%= user.username %>" required>
-      <button>Update Username</button>
-    </form>
+      <% if (error) { %>
+        <div class="error-message"><%= error %></div>
+      <% } %>
+      <% if (typeof success !== 'undefined' && success) { %>
+        <div class="success-message"><%= success %></div>
+      <% } %>
 
-    <h3>Change Password</h3>
-    <form method="post" action="/auth/account/password">
-      <p style="display:flex; align-items:center; gap:8px;">
-        <input id="current_password" name="current_password" type="password" placeholder="Current password" required>
-        <button type="button" onclick="togglePassword('current_password', this)" title="Show/Hide password">👁</button>
-      </p>
-      <p style="display:flex; align-items:center; gap:8px;">
-        <input id="new_password" name="new_password" type="password" placeholder="New password" required>
-        <button type="button" onclick="togglePassword('new_password', this)" title="Show/Hide password">👁</button>
-      </p>
-      <p style="display:flex; align-items:center; gap:8px;">
-        <input id="confirm_password" name="confirm_password" type="password" placeholder="Confirm new password" required>
-        <button type="button" onclick="togglePassword('confirm_password', this)" title="Show/Hide password">👁</button>
-      </p>
-      <button>Update Password</button>
-    </form>
+      <h3>Change Username</h3>
+      <form method="post" action="/auth/account/username">
+        <input type="text" name="username" value="<%= user.username %>" required>
+        <button type="submit" class="btn btn-primary">Update Username</button>
+      </form>
 
-    <script>
-      function togglePassword(inputId, btn) {
-        const input = document.getElementById(inputId);
-        if (input.type === 'password') {
-          input.type = 'text';
-          btn.textContent = '🙈';
-        } else {
-          input.type = 'password';
-          btn.textContent = '👁';
-        }
+      <h3>Change Password</h3>
+      <form method="post" action="/auth/account/password">
+        <div class="input-row">
+          <input id="current_password" name="current_password" type="password" placeholder="Current password" required>
+          <button type="button" class="btn btn-icon" onclick="togglePassword('current_password', this)" title="Show/Hide">👁</button>
+        </div>
+        <div class="input-row">
+          <input id="new_password" name="new_password" type="password" placeholder="New password" required>
+          <button type="button" class="btn btn-icon" onclick="togglePassword('new_password', this)" title="Show/Hide">👁</button>
+        </div>
+        <div class="input-row">
+          <input id="confirm_password" name="confirm_password" type="password" placeholder="Confirm new password" required>
+          <button type="button" class="btn btn-icon" onclick="togglePassword('confirm_password', this)" title="Show/Hide">👁</button>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Password</button>
+      </form>
+
+      <h3>Danger Zone</h3>
+      <form method="post" action="/auth/account/delete" style="display:inline">
+        <button type="submit" class="btn btn-danger" onclick="return confirm('This will permanently delete your account and all your recipes. Are you sure?')">
+          Delete My Account
+        </button>
+      </form>
+
+      <div class="logout-section">
+        <form method="post" action="/auth/logout">
+          <button type="submit" class="btn btn-secondary">Log Out</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        btn.textContent = '👁';
       }
-    </script>
-
-    <h3>Delete Account</h3>
-    <form method="post" action="/auth/account/delete">
-      <button onclick="return confirm('This will delete your account and your recipes. Continue?')">
-        Delete My Account
-      </button>
-    </form>
-
-    <form method="post" action="/auth/logout" style="margin-top:10px">
-      <button>Log out</button>
-    </form>
-
-    <p style="margin-top:10px"><a href="/">Home</a></p>
-  </body>
+    }
+  </script>
+</body>
 </html>

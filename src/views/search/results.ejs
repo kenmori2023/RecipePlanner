@@ -1,45 +1,177 @@
 <!doctype html>
 <html>
-  <body>
-    <h2>Search Results</h2>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results | RecipePlanner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #fff;
+    }
+    .navbar {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .navbar .logo { font-size: 1.5rem; font-weight: 700; color: #fff; text-decoration: none; }
+    .navbar a { color: #4facfe; text-decoration: none; font-weight: 500; }
+    .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .search-form {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 30px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+    .form-group { flex: 1; min-width: 150px; }
+    .form-group label { display: block; color: #888; font-size: 0.8rem; margin-bottom: 5px; }
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+    }
+    input:focus, select:focus { outline: none; border-color: #4facfe; }
+    select option { background: #1a1a2e; }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .btn-primary { background: linear-gradient(135deg, #4facfe, #00f2fe); color: #1a1a2e; }
+    .btn-sm { padding: 8px 15px; font-size: 0.85rem; }
+    .results-count {
+      color: #888;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .recipe-grid { display: grid; gap: 15px; }
+    .recipe-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 20px;
+      align-items: center;
+      transition: all 0.3s;
+    }
+    .recipe-card:hover { background: rgba(255,255,255,0.1); transform: translateX(5px); }
+    .recipe-info h3 { color: #fff; margin-bottom: 5px; }
+    .recipe-meta { display: flex; gap: 20px; color: #888; font-size: 0.85rem; margin-top: 8px; }
+    .recipe-meta span { display: flex; align-items: center; gap: 5px; }
+    .cuisine-tag {
+      display: inline-block;
+      background: rgba(79,172,254,0.2);
+      color: #4facfe;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-top: 8px;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+    .empty-state .icon { font-size: 4rem; margin-bottom: 15px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="logo">🍳 RecipePlanner</a>
+    <a href="/search">← New Search</a>
+  </nav>
 
-    <form method="get" action="/search/results">
-      <input type="text" name="q" placeholder="Search text..." value="<%= q %>">
-      <select name="cuisine">
-        <option value="">Any cuisine</option>
-        <% cuisines.forEach(function(c) { %>
-          <option value="<%= c.name %>" <%= c.name === cuisine ? 'selected' : '' %>><%= c.name %></option>
-        <% }); %>
-      </select>
-      <select name="ingredient_id">
-        <option value="">Any ingredient</option>
-        <% ingredients.forEach(function(i) { %>
-          <option value="<%= i.id %>" <%= String(i.id) === String(ingredientId) ? 'selected' : '' %>><%= i.name %></option>
-        <% }); %>
-      </select>
-      <button>Search</button>
+  <div class="container">
+    <h1>🔍 Search Results</h1>
+    
+    <form method="get" action="/search/results" class="search-form">
+      <div class="form-group" style="flex:2;">
+        <label>Search</label>
+        <input type="text" name="q" placeholder="Search..." value="<%= q %>">
+      </div>
+      <div class="form-group">
+        <label>Cuisine</label>
+        <select name="cuisine">
+          <option value="">Any</option>
+          <% cuisines.forEach(function(c) { %>
+            <option value="<%= c.name %>" <%= c.name === cuisine ? 'selected' : '' %>><%= c.name %></option>
+          <% }); %>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Ingredient</label>
+        <select name="ingredient_id">
+          <option value="">Any</option>
+          <% ingredients.forEach(function(i) { %>
+            <option value="<%= i.id %>" <%= String(i.id) === String(ingredientId) ? 'selected' : '' %>><%= i.name %></option>
+          <% }); %>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
-    <table border="1" cellpadding="6" style="margin-top:10px">
-      <tr>
-        <th>Title</th><th>Cuisine</th><th>Created</th><th># Ingredients</th><th>Total Cost</th><th></th>
-      </tr>
+    <p class="results-count">Found <%= rows.length %> recipe<%= rows.length !== 1 ? 's' : '' %></p>
+
+    <div class="recipe-grid">
       <% if (rows.length) { %>
         <% rows.forEach(function(r) { %>
-          <tr>
-            <td><%= r.title %></td>
-            <td><%= r.cuisine || '-' %></td>
-            <td><%= new Date(r.created_at).toLocaleString() %></td>
-            <td><%= r.ingredient_count %></td>
-            <td>$<%= (r.total_cost || 0).toFixed(2) %></td>
-            <td><a href="/recipes/<%= r.id %>/edit">Edit</a></td>
-          </tr>
+          <div class="recipe-card">
+            <div class="recipe-info">
+              <h3><%= r.title %></h3>
+              <% if (r.cuisine) { %>
+                <span class="cuisine-tag"><%= r.cuisine %></span>
+              <% } %>
+              <div class="recipe-meta">
+                <span>🥕 <%= r.ingredient_count %> ingredients</span>
+                <span>💰 $<%= (r.total_cost || 0).toFixed(2) %></span>
+                <span>📅 <%= new Date(r.created_at).toLocaleDateString() %></span>
+              </div>
+            </div>
+            <a href="/recipes/<%= r.id %>/edit" class="btn btn-primary btn-sm">View</a>
+          </div>
         <% }); %>
       <% } else { %>
-        <tr><td colspan="6">No matches.</td></tr>
+        <div class="empty-state">
+          <div class="icon">🔍</div>
+          <h3>No recipes found</h3>
+          <p>Try adjusting your search criteria</p>
+        </div>
       <% } %>
-    </table>
-
-    <p style="margin-top:10px"><a href="/">Home</a> · <a href="/recipes">Recipes</a> · <a href="/reports">Reports</a></p>
-  </body>
+    </div>
+  </div>
+</body>
 </html>

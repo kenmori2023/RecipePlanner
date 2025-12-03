@@ -1,59 +1,218 @@
 <!doctype html>
 <html>
-  <body>
-    <h2>Report Results</h2>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Results | RecipePlanner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #fff;
+    }
+    .navbar {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .navbar .logo { font-size: 1.5rem; font-weight: 700; color: #fff; text-decoration: none; }
+    .navbar a { color: #4facfe; text-decoration: none; font-weight: 500; }
+    .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .filter-bar {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 15px 20px;
+      margin-bottom: 30px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+    .form-group { flex: 1; min-width: 120px; }
+    .form-group label { display: block; color: #888; font-size: 0.75rem; margin-bottom: 5px; }
+    input, select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+    }
+    input:focus, select:focus { outline: none; border-color: #4facfe; }
+    select option { background: #1a1a2e; }
+    .btn {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+    .btn-primary { background: linear-gradient(135deg, #4facfe, #00f2fe); color: #1a1a2e; }
+    .btn-sm { padding: 6px 12px; }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+    }
+    .stat-card .icon { font-size: 2rem; margin-bottom: 10px; }
+    .stat-card .value {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-card .label { color: #888; font-size: 0.85rem; margin-top: 5px; }
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 25px;
+    }
+    .card h3 { color: #4facfe; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; color: #888; font-weight: 500; padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem; }
+    td { padding: 15px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #ccc; }
+    tr:hover { background: rgba(255,255,255,0.03); }
+    .cuisine-tag {
+      display: inline-block;
+      background: rgba(79,172,254,0.2);
+      color: #4facfe;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="logo">🍳 RecipePlanner</a>
+    <a href="/reports">← New Report</a>
+  </nav>
 
-    <form method="post" action="/reports/results" style="margin-bottom:10px">
-      <label>From <input type="date" name="from" value="<%= filters.from %>"></label>
-      <label>To <input type="date" name="to" value="<%= filters.to %>"></label>
+  <div class="container">
+    <h1>📊 Report Results</h1>
 
-      <select name="cuisine">
-        <option value="">Any cuisine</option>
-        <% for (const c of cuisines) { %>
-          <option value="<%= c.name %>" <%= c.name === filters.cuisine ? 'selected' : '' %>><%= c.name %></option>
-        <% } %>
-      </select>
-
-      <select name="ingredient_id">
-        <option value="">Any ingredient</option>
-        <% for (const i of ingredients) { %>
-          <option value="<%= i.id %>" <%= String(i.id) === String(filters.ingredient_id) ? 'selected' : '' %>><%= i.name %></option>
-        <% } %>
-      </select>
-
-      <button>Generate</button>
+    <form method="post" action="/reports/results" class="filter-bar">
+      <div class="form-group">
+        <label>From</label>
+        <input type="date" name="from" value="<%= filters.from %>">
+      </div>
+      <div class="form-group">
+        <label>To</label>
+        <input type="date" name="to" value="<%= filters.to %>">
+      </div>
+      <div class="form-group">
+        <label>Cuisine</label>
+        <select name="cuisine">
+          <option value="">Any</option>
+          <% for (const c of cuisines) { %>
+            <option value="<%= c.name %>" <%= c.name === filters.cuisine ? 'selected' : '' %>><%= c.name %></option>
+          <% } %>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Ingredient</label>
+        <select name="ingredient_id">
+          <option value="">Any</option>
+          <% for (const i of ingredients) { %>
+            <option value="<%= i.id %>" <%= String(i.id) === String(filters.ingredient_id) ? 'selected' : '' %>><%= i.name %></option>
+          <% } %>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Update</button>
     </form>
 
-    <h3>Stats</h3>
-    <ul>
-      <li>Avg Prep Time: <%= stats.avg_prep ? stats.avg_prep.toFixed(1) : '0.0' %> min</li>
-      <li>Avg Cook Time: <%= stats.avg_cook ? stats.avg_cook.toFixed(1) : '0.0' %> min</li>
-      <li>Avg Ingredient Count: <%= stats.avg_ingredients ? stats.avg_ingredients.toFixed(1) : '0.0' %></li>
-      <li>Avg Total Cost: $<%= stats.avg_total_cost ? stats.avg_total_cost.toFixed(2) : '0.00' %></li>
-    </ul>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="icon">⏱️</div>
+        <div class="value"><%= stats.avg_prep ? stats.avg_prep.toFixed(1) : '0' %></div>
+        <div class="label">Avg Prep Time (min)</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">🍳</div>
+        <div class="value"><%= stats.avg_cook ? stats.avg_cook.toFixed(1) : '0' %></div>
+        <div class="label">Avg Cook Time (min)</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">🥕</div>
+        <div class="value"><%= stats.avg_ingredients ? stats.avg_ingredients.toFixed(1) : '0' %></div>
+        <div class="label">Avg Ingredients</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">💰</div>
+        <div class="value">$<%= stats.avg_total_cost ? stats.avg_total_cost.toFixed(2) : '0.00' %></div>
+        <div class="label">Avg Total Cost</div>
+      </div>
+    </div>
 
-    <h3>Matching Recipes</h3>
-    <table border="1" cellpadding="6">
-      <tr>
-        <th>Title</th><th>Cuisine</th><th>Created</th><th>Prep</th><th>Cook</th><th># Ingredients</th><th>Total Cost</th><th></th>
-      </tr>
-      <% for (const r of list) { %>
-        <tr>
-          <td><%= r.title %></td>
-          <td><%= r.cuisine || '-' %></td>
-          <td><%= new Date(r.created_at).toLocaleString() %></td>
-          <td><%= r.prep_minutes || 0 %>m</td>
-          <td><%= r.cook_minutes || 0 %>m</td>
-          <td><%= r.ingredient_count %></td>
-          <td>$<%= (r.total_cost || 0).toFixed(2) %></td>
-          <td><a href="/recipes/<%= r.id %>/edit">Edit</a></td>
-        </tr>
+    <div class="card">
+      <h3>Matching Recipes (<%= list.length %>)</h3>
+      <% if (list.length) { %>
+        <table>
+          <tr>
+            <th>Title</th>
+            <th>Cuisine</th>
+            <th>Prep</th>
+            <th>Cook</th>
+            <th>Ingredients</th>
+            <th>Cost</th>
+            <th></th>
+          </tr>
+          <% for (const r of list) { %>
+            <tr>
+              <td><%= r.title %></td>
+              <td><% if (r.cuisine) { %><span class="cuisine-tag"><%= r.cuisine %></span><% } else { %>-<% } %></td>
+              <td><%= r.prep_minutes || 0 %>m</td>
+              <td><%= r.cook_minutes || 0 %>m</td>
+              <td><%= r.ingredient_count %></td>
+              <td>$<%= (r.total_cost || 0).toFixed(2) %></td>
+              <td><a href="/recipes/<%= r.id %>/edit" class="btn btn-primary btn-sm">Edit</a></td>
+            </tr>
+          <% } %>
+        </table>
+      <% } else { %>
+        <div class="empty-state">
+          <p>No recipes match your filters</p>
+        </div>
       <% } %>
-      <% if (!list.length) { %>
-        <tr><td colspan="8">No matching recipes found.</td></tr>
-      <% } %>
-    </table>
-
-    <p style="margin-top:10px"><a href="/">Home</a> · <a href="/recipes">Recipes</a> · <a href="/search">Search</a> · <a href="/reports">Reports</a></p>
-  </body>
+    </div>
+  </div>
+</body>
 </html>

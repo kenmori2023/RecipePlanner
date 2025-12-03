@@ -40,11 +40,11 @@ const addIngredientTx = db.transaction((recipeId, name, quantity, unit, price, p
   const clean = name?.trim();
   if (!clean) return;
 
-  // create ingredient name if not exists
-  db.prepare(`INSERT OR IGNORE INTO ingredients(name) VALUES (trim(?))`).run(clean);
+  // create ingredient name if not exists (clean is already trimmed in JS)
+  db.prepare(`INSERT OR IGNORE INTO ingredients(name) VALUES (?)`).run(clean);
 
   // get id
-  const ing = db.prepare(`SELECT id FROM ingredients WHERE name = trim(?)`).get(clean);
+  const ing = db.prepare(`SELECT id FROM ingredients WHERE name = ?`).get(clean);
   if (!ing) return;
 
   // insert or replace the mapping (PK is recipe_id+ingredient_id)
@@ -56,12 +56,14 @@ const addIngredientTx = db.transaction((recipeId, name, quantity, unit, price, p
 });
 
 // ---------- List / Create / Edit / Update / Delete ----------
-exports.list = (_req, res) => {
+// List only the current user's recipes
+exports.list = (req, res) => {
   const rows = db.prepare(`
     SELECT id, title, cuisine, prep_minutes, cook_minutes, created_at
     FROM recipes
+    WHERE user_id = ?
     ORDER BY created_at DESC
-  `).all();
+  `).all(req.session.userId);
   res.render('recipes/list', { rows });
 };
 
@@ -73,8 +75,8 @@ exports.create = (req, res) => {
   const { title, description, cuisine, servings, prep_minutes, cook_minutes } = req.body;
   db.prepare(`
     INSERT INTO recipes (user_id, title, description, cuisine, servings, prep_minutes, cook_minutes)
-    VALUES (1, ?, ?, ?, ?, ?, ?)
-  `).run(title, description, cuisine, servings || null, +prep_minutes || 0, +cook_minutes || 0);
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `).run(req.session.userId, title, description, cuisine, servings || null, +prep_minutes || 0, +cook_minutes || 0);
   res.redirect('/recipes');
 };
 

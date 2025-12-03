@@ -45,9 +45,4 @@ module.exports.results = (req, res) => {
   const ingredients = db.prepare(`SELECT id, name FROM ingredients ORDER BY name`).all();
 
   res.render('search/results', { rows, cuisines, ingredients, q, cuisine, ingredientId });
-
-  console.log('[CTRL] search.results', { q, cuisine, ingredientId });
-  console.log('[SQL]', whereSql);
-  console.log('[PARAMS]', params);
-  console.log('[ROWS]', rows);
 };
