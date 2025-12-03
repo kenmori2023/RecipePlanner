@@ -1,4 +1,4 @@
-INSERT INTO users (username, password_hash)
+INSERT OR IGNORE INTO users (username, password_hash)
 VALUES ('demo', '$2a$10$somethingFakeHashHere');
 
 INSERT OR IGNORE INTO recipes (id, user_id, title, cuisine, servings, prep_minutes, cook_minutes, description)
